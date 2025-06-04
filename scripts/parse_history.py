@@ -2,15 +2,13 @@
 parse_history.py
 -----------------
 
-This script loads ChatGPT conversation history exported using the
-"Export data" option from your ChatGPT settings. The exported file is a JSON
-archive. This script extracts the conversations and saves them in a more
-convenient format such as plain text files.
+الملف هذا يقرأ سجل محادثات ChatGPT اللي تصدره من خيار "تصدير البيانات".
+يكون الملف بصيغة JSON ونسحب منه المحادثات ونحولها لملفات نصية أخف.
 
-Usage:
+طريقة الاستخدام:
     python parse_history.py path_to_export.json output_dir
 
-The export file typically has a structure like::
+عادةً الملف المصدر يكون بهالشكل::
 
     {
         "conversations": [
@@ -22,20 +20,40 @@ The export file typically has a structure like::
         ]
     }
 
-The `mapping` field contains the messages. This script walks the mapping
-and writes each conversation to ``output_dir/<title>.txt``.
+حقل ``mapping`` يحتوي الرسائل، نمشي عليه ونكتب كل محادثة في
+``output_dir/<title>.txt``.
 
-You need Python 3.8+.
+يحتاج السكربت بايثون 3.8 فما فوق.
 """
 import json
 import sys
 from pathlib import Path
+import re
+
+
+def sanitize_filename(name):
+    """
+    ينظف العنوان حتى يصير اسم ملف صالح.
+
+    المدخلات:
+        name (str): العنوان الأصلي.
+
+    المخرجات:
+        str: اسم ملف آمن.
+    """
+    return re.sub(r"[^\w-]", "_", name)
 
 def extract_text_from_mapping(mapping):
-    """Yield message texts in order from a conversation mapping."""
-    # Each mapping entry is keyed by message ID with info about parent
-    # relationships. We iterate in chronological order using the
-    # 'create_time' field.
+    """
+    ترجع نصوص الرسائل بترتيبها الزمني.
+
+    المدخلات:
+        mapping (dict): خريطة المحادثة.
+
+    المخرجات:
+        Iterable[str]: النصوص بالتسلسل.
+    """
+    # نرتب الرسائل حسب حقل create_time حتى نحافظ على التسلسل.
     items = list(mapping.values())
     items.sort(key=lambda x: x.get('create_time', 0))
     for item in items:
@@ -49,8 +67,18 @@ def extract_text_from_mapping(mapping):
 
 
 def write_conversation(conv, out_dir):
-    """Write a single conversation to a text file."""
+    """
+    تكتب محادثة وحدة في ملف نصي.
+
+    المدخلات:
+        conv (dict): بيانات المحادثة.
+        out_dir (Path | str): مجلد الإخراج.
+
+    المخرجات:
+        None
+    """
     title = conv.get('title', 'conversation')
+    title = sanitize_filename(title)
     mapping = conv.get('mapping', {})
     outfile = Path(out_dir) / f"{title}.txt"
     with outfile.open('w', encoding='utf-8') as f:
