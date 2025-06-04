@@ -48,3 +48,23 @@ fine-tuning instructions.
 
 These scripts are intentionally lightweight so they can run without any
 network connection once the required Python packages are installed.
+
+## Connecting to Telegram
+
+To chat with your notes via Telegram, create a bot using [BotFather](https://t.me/BotFather)
+and copy the token. Create a `.env` file based on `.env.example` and place your token
+inside:
+
+```bash
+cp .env.example .env
+echo "TELEGRAM_BOT_TOKEN=your_token" >> .env
+```
+
+Run the Telegram bot with:
+
+```bash
+python scripts/telegram_bot.py notes/
+```
+
+Send any message to your bot, and it will search your notes using the same simple logic
+as `offline_bot.py`.
