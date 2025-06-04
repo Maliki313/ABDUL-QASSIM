@@ -2,16 +2,14 @@
 offline_bot.py
 ---------------
 
-A minimal example of using your own text files to answer questions
-without any online search. This script loads all ``.txt`` files from a
-specified directory and uses simple keyword matching to return the most
-relevant sentences for a query.
+هالسكربت يقرأ ملفات النصوص عندك حتى يجاوب على سؤالك بلا اتصال بالإنترنت.
+يجمع كل الملفات ``.txt`` من مجلد تحدده ويسوي بحث بسيط بالكلمات المفتاحية حتى
+يجيب لك أكثر الجمل ارتباطاً بسؤالك.
 
-This is **not** a full language model. It simply performs a very basic
-search. You can extend it by integrating an open-source language model or
-embedding-based retrieval library (e.g. `sentence-transformers`).
+البرنامج مو نموذج لغوي كامل، بس يعتمد على بحث بسيط. تقدر تطوره وتربطه بنموذج
+مفتوح المصدر أو مكتبة تعالج التضمين مثل `sentence-transformers`.
 
-Usage::
+طريقة الاستخدام::
 
     python offline_bot.py data_dir "your question here"
 
@@ -22,7 +20,15 @@ import re
 
 
 def load_sentences(data_dir):
-    """Load sentences from all .txt files under data_dir."""
+    """ 
+    تجمع الجمل من كل ملفات ``.txt`` داخل المجلد المحدد.
+
+    المدخلات:
+        data_dir (str | Path): مسار المجلد اللي يحتوي الملفات.
+
+    المخرجات:
+        list[tuple[str, str]]: قائمة بالجمل مع اسم الملف.
+    """
     sentences = []
     for path in Path(data_dir).rglob('*.txt'):
         text = path.read_text(encoding='utf-8')
@@ -34,7 +40,16 @@ def load_sentences(data_dir):
 
 
 def simple_search(sentences, query):
-    """Return sentences containing all keywords from the query."""
+    """
+    تبحث عن الجمل اللي تحتوي كل كلمات السؤال.
+
+    المدخلات:
+        sentences (list[tuple[str, str]]): الجمل مع اسم الملف.
+        query (str): السؤال المطلوب البحث عنه.
+
+    المخرجات:
+        list[tuple[str, str]]: الجمل المطابقة.
+    """
     keywords = re.findall(r"\w+", query.lower())
     results = []
     for name, sentence in sentences:
