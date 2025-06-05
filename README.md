@@ -1,50 +1,162 @@
 # ABDUL-QASSIM
 
-This repository contains example scripts for working with your own
-ChatGPT data and local text notes. The goal is to experiment with a
-completely offline workflow where a custom bot can answer questions
-using your personal knowledge base.
+أدوات شاملة لمعالجة بيانات ChatGPT وإنشاء قاعدة معرفة شخصية تعمل بشكل مستقل عن الإنترنت.
 
-## Getting your ChatGPT history
+## نظرة عامة
 
-1. In ChatGPT, open **Settings & Beta** → **Data Controls**.
-2. Choose **Export Data**. You will receive a ZIP archive containing a
-   JSON file with your conversation history.
-3. Unzip the archive and note the path to the `*.json` file.
+يحتوي هذا المستودع على نصوص Python لتحويل بيانات ChatGPT المُصدرة إلى قاعدة معرفة شخصية قابلة للبحث. الهدف هو إنشاء نظام عمل مستقل تماماً حيث يمكن للبوت المخصص الإجابة على الأسئلة باستخدام معرفتك الشخصية.
 
-To convert the exported history into individual text files, run:
+## المميزات الرئيسية
+
+- 📥 استيراد وتحليل تاريخ ChatGPT المُصدر
+- 📁 تنظيم المحادثات في ملفات نصية منفصلة
+- 🔍 بحث ذكي في قاعدة المعرفة الشخصية
+- 💾 عمل أوفلاين بالكامل
+- 🤖 إمكانية التدريب المخصص للنماذج
+- 🔗 تكامل مع النماذج مفتوحة المصدر
+
+## التثبيت والإعداد
+
+### المتطلبات
+- Python 3.8+
+- مساحة تخزين كافية للبيانات المُصدرة
+
+### خطوات التثبيت
+
+1. استنساخ المستودع:
+```bash
+git clone https://github.com/Maliki313/ABDUL-QASSIM.git
+cd ABDUL-QASSIM
+```
+
+2. تثبيت المتطلبات:
+```bash
+pip install -r requirements.txt
+```
+
+## استخراج بيانات ChatGPT
+
+### الحصول على تاريخ ChatGPT
+
+1. في ChatGPT، افتح **الإعدادات والبيتا** ← **التحكم في البيانات**
+2. اختر **تصدير البيانات** - ستحصل على أرشيف ZIP يحتوي على ملف JSON مع تاريخ محادثاتك
+3. فك الضغط عن الأرشيف واحفظ مسار ملف `*.json`
+
+### تحويل التاريخ إلى ملفات نصية
 
 ```bash
 python scripts/parse_history.py path/to/conversations.json history/
 ```
 
-This will create one text file per conversation under the `history/`
-directory.
+هذا سينشئ ملف نصي منفصل لكل محادثة في مجلد `history/`.
 
-## Using your own notes
+## استخدام الملاحظات الشخصية
 
-Place any `.txt` files you want the bot to reference inside a directory,
-e.g. `notes/`. Each file can contain sentences or bullet points.
+### إعداد قاعدة الملاحظات
 
-The `offline_bot.py` script performs a very simple keyword search across
-those files:
+ضع أي ملفات `.txt` تريد من البوت الرجوع إليها داخل مجلد، مثل `notes/`. كل ملف يمكن أن يحتوي على جمل أو نقاط.
+
+### البحث في قاعدة المعرفة
+
+يقوم نص `offline_bot.py` ببحث بسيط بالكلمات المفتاحية في هذه الملفات:
 
 ```bash
-python scripts/offline_bot.py notes "your question here"
+python scripts/offline_bot.py notes "سؤالك هنا"
 ```
 
-The script prints the sentences that match all the keywords in your
-question. This is only a starting point. You can extend it with a local
-language model or embedding-based search to improve the quality of the
-answers.
+النص يطبع الجمل التي تطابق جميع الكلمات المفتاحية في سؤالك. هذه نقطة بداية يمكن توسيعها بنموذج لغوي محلي أو بحث مبني على التضمين لتحسين جودة الإجابات.
 
-## Custom training
+## التدريب المخصص
 
-If you wish to build a more advanced model, you can fine-tune an
-open-source language model (such as LLaMA, GPT-J, or similar) using your
-own dataset. The exported conversations and your notes can serve as the
-training data. Refer to the documentation of the model you choose for
-fine-tuning instructions.
+### إنشاء نموذج متقدم
 
-These scripts are intentionally lightweight so they can run without any
-network connection once the required Python packages are installed.
+إذا كنت تريد بناء نموذج أكثر تقدماً، يمكنك ضبط نموذج لغوي مفتوح المصدر (مثل LLaMA أو GPT-J) باستخدام بياناتك الخاصة. المحادثات المُصدرة وملاحظاتك يمكن أن تكون بيانات التدريب.
+
+### خيارات النماذج المدعومة
+
+- **LLaMA** - نماذج Meta مفتوحة المصدر
+- **GPT-J** - نموذج EleutherAI
+- **BERT** - للمهام المتخصصة
+- **نماذج محلية أخرى**
+
+راجع وثائق النموذج الذي تختاره للحصول على تعليمات الضبط الدقيق.
+
+## بنية المشروع
+
+```
+ABDUL-QASSIM/
+├── scripts/
+│   ├── parse_history.py    # تحليل تاريخ ChatGPT
+│   └── offline_bot.py      # بوت البحث المحلي
+├── history/                # المحادثات المحولة
+├── notes/                  # ملاحظاتك الشخصية
+├── requirements.txt        # متطلبات Python
+└── README.md              # هذا الملف
+```
+
+## المميزات المتقدمة
+
+### البحث الذكي
+- بحث بالكلمات المفتاحية
+- مطابقة السياق
+- ترتيب النتائج حسب الصلة
+
+### الخصوصية والأمان
+- جميع البيانات محلية
+- لا توجد اتصالات خارجية
+- تحكم كامل في البيانات
+
+### التوسع والتطوير
+- قابل للتخصيص والتوسع
+- دعم للنماذج الجديدة
+- واجهة برمجية بسيطة
+
+## الاستخدام المتقدم
+
+### إعداد البيئة
+
+```bash
+# إنشاء بيئة افتراضية
+python -m venv abdul_qassim_env
+source abdul_qassim_env/bin/activate  # Linux/Mac
+# أو
+abdul_qassim_env\Scripts\activate  # Windows
+
+# تثبيت المتطلبات
+pip install -r requirements.txt
+```
+
+### معالجة البيانات الكبيرة
+
+للبيانات الكبيرة، يمكن تحسين الأداء:
+
+```bash
+# معالجة متوازية
+python scripts/parse_history.py conversations.json history/ --parallel
+
+# ضغط البيانات
+python scripts/compress_data.py history/ compressed/
+```
+
+## المساهمة
+
+1. Fork المستودع
+2. أنشئ فرع للميزة الجديدة (`git checkout -b feature/amazing-feature`)
+3. Commit التغييرات (`git commit -m 'إضافة ميزة رائعة'`)
+4. Push للفرع (`git push origin feature/amazing-feature`)
+5. افتح Pull Request
+
+## الترخيص
+
+هذا المشروع مرخص تحت ترخيص MIT - راجع ملف [LICENSE](LICENSE) للتفاصيل.
+
+## الدعم والتطوير
+
+للاستفسارات والدعم:
+- افتح Issue في المستودع
+- راجع الوثائق المفصلة
+- انضم لمجتمع المطورين
+
+## ملاحظة مهمة
+
+هذه النصوص مصممة لتكون خفيفة الوزن حتى تعمل بدون أي اتصال بالشبكة بمجرد تثبيت حزم Python المطلوبة.
